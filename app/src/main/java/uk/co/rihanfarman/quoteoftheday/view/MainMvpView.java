@@ -6,7 +6,7 @@ package uk.co.rihanfarman.quoteoftheday.view;
 
 public interface MainMvpView extends MvpView {
 
-    void showMessage(int stringId);
+    void showMessage(String message);
 
     void showProgressIndicator();
 }

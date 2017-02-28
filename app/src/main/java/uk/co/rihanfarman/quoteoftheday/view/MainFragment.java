@@ -4,13 +4,17 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import uk.co.rihanfarman.quoteoftheday.R;
 import uk.co.rihanfarman.quoteoftheday.presenter.MainPresenter;
 
@@ -21,6 +25,15 @@ public class MainFragment extends Fragment implements MainMvpView {
 
     @BindView(R.id.textView)
     TextView textView;
+
+    @BindView(R.id.progress)
+    ProgressBar progressBar;
+
+    @BindView(R.id.button)
+    Button button;
+
+    @BindView(R.id.cardView)
+    CardView cardView;
 
     private MainPresenter mainPresenter;
 
@@ -53,13 +66,16 @@ public class MainFragment extends Fragment implements MainMvpView {
     }
 
     @Override
-    public void showMessage(int stringId) {
-        textView.setText(getString(stringId));
+    public void showMessage(String message) {
+        progressBar.setVisibility(View.GONE);
+        cardView.setVisibility(View.VISIBLE);
+        textView.setText(message);
     }
 
     @Override
     public void showProgressIndicator() {
-
+        progressBar.setVisibility(View.VISIBLE);
+        cardView.setVisibility(View.GONE);
     }
 
     @Override
@@ -70,6 +86,11 @@ public class MainFragment extends Fragment implements MainMvpView {
     @Override
     public void onResume() {
         super.onResume();
+        mainPresenter.loadQuote();
+    }
+
+    @OnClick(R.id.button)
+    void refreshQuote() {
         mainPresenter.loadQuote();
     }
 }
