@@ -4,17 +4,16 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import uk.co.rihanfarman.quoteoftheday.R;
 import uk.co.rihanfarman.quoteoftheday.presenter.MainPresenter;
 
@@ -23,17 +22,11 @@ import uk.co.rihanfarman.quoteoftheday.presenter.MainPresenter;
  */
 public class MainFragment extends Fragment implements MainMvpView {
 
-    @BindView(R.id.textView)
-    TextView textView;
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
 
-    @BindView(R.id.progress)
-    ProgressBar progressBar;
-
-    @BindView(R.id.button)
-    Button button;
-
-    @BindView(R.id.cardView)
-    CardView cardView;
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout swipeRefresh;
 
     private MainPresenter mainPresenter;
 
@@ -49,6 +42,21 @@ public class MainFragment extends Fragment implements MainMvpView {
         super.onCreate(savedInstanceState);
         mainPresenter = new MainPresenter();
         mainPresenter.attachView(this);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(mainPresenter.getQuoteAdapter());
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mainPresenter.fetchQuote();
+            }
+        });
     }
 
     @Nullable
@@ -67,15 +75,17 @@ public class MainFragment extends Fragment implements MainMvpView {
 
     @Override
     public void showMessage(String message) {
-        progressBar.setVisibility(View.GONE);
-        cardView.setVisibility(View.VISIBLE);
-        textView.setText(message);
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showProgressIndicator() {
-        progressBar.setVisibility(View.VISIBLE);
-        cardView.setVisibility(View.GONE);
+        swipeRefresh.setRefreshing(true);
+    }
+
+    @Override
+    public void hideProgressIndicator() {
+        swipeRefresh.setRefreshing(false);
     }
 
     @Override
@@ -86,11 +96,6 @@ public class MainFragment extends Fragment implements MainMvpView {
     @Override
     public void onResume() {
         super.onResume();
-        mainPresenter.loadQuote();
-    }
-
-    @OnClick(R.id.button)
-    void refreshQuote() {
-        mainPresenter.loadQuote();
+        mainPresenter.loadQuotes();
     }
 }
