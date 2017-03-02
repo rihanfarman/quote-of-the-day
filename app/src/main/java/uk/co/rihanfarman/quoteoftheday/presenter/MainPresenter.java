@@ -1,8 +1,10 @@
 package uk.co.rihanfarman.quoteoftheday.presenter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import io.realm.Realm;
 import rx.Subscriber;
@@ -23,8 +25,8 @@ public class MainPresenter implements Presenter<MainMvpView> {
     private MainMvpView view;
     private Quote quote;
 
-    public MainPresenter() {
-        quoteAdapter = new QuoteAdapter();
+    public MainPresenter(Context context) {
+        quoteAdapter = new QuoteAdapter(context);
     }
 
     @Override
@@ -42,7 +44,7 @@ public class MainPresenter implements Presenter<MainMvpView> {
         //ç
         MaShapeService maShapeService = MaShapeService.Factory.create();
 
-        maShapeService.getQuote("ztzfKAxQebmshkc9GNUrGgh19bx9p1c4r6Djsnu6sJ75x4IxZC")
+        maShapeService.getQuote("ztzfKAxQebmshkc9GNUrGgh19bx9p1c4r6Djsnu6sJ75x4IxZC", "Famous")
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Subscriber<Quote>() {
@@ -80,6 +82,14 @@ public class MainPresenter implements Presenter<MainMvpView> {
         Realm.init(view.getContext());
         Realm defaultInstance = Realm.getDefaultInstance();
         ArrayList<Quote> list = new ArrayList(defaultInstance.where(Quote.class).findAll());
+        Collections.reverse(list);
         quoteAdapter.setQuotes(list);
+    }
+
+    public boolean isQuoteListEmpty() {
+        Realm.init(view.getContext());
+        Realm defaultInstance = Realm.getDefaultInstance();
+        ArrayList<Quote> list = new ArrayList(defaultInstance.where(Quote.class).findAll());
+        return list.isEmpty();
     }
 }
