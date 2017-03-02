@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import uk.co.rihanfarman.quoteoftheday.R;
+import uk.co.rihanfarman.quoteoftheday.model.ItemTouchHelperAdapter;
+import uk.co.rihanfarman.quoteoftheday.model.SimpleItemTouchHelperCallback;
 import uk.co.rihanfarman.quoteoftheday.presenter.MainPresenter;
 
 /**
@@ -40,7 +43,7 @@ public class MainFragment extends Fragment implements MainMvpView {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mainPresenter = new MainPresenter();
+        mainPresenter = new MainPresenter(getContext());
         mainPresenter.attachView(this);
     }
 
@@ -51,6 +54,12 @@ public class MainFragment extends Fragment implements MainMvpView {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(mainPresenter.getQuoteAdapter());
+
+        ItemTouchHelper.Callback callback =
+                new SimpleItemTouchHelperCallback((ItemTouchHelperAdapter) mainPresenter.getQuoteAdapter());
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(recyclerView);
+
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -96,6 +105,10 @@ public class MainFragment extends Fragment implements MainMvpView {
     @Override
     public void onResume() {
         super.onResume();
-        mainPresenter.loadQuotes();
+        if (mainPresenter.isQuoteListEmpty()) {
+            mainPresenter.fetchQuote();
+        } else {
+            mainPresenter.loadQuotes();
+        }
     }
 }

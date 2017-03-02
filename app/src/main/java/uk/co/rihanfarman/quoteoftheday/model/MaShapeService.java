@@ -7,6 +7,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -16,7 +17,7 @@ import rx.Observable;
 public interface MaShapeService {
 
     @POST("./")
-    Observable<Quote> getQuote(@Header("X-Mashape-Key") String xMashapeKey);
+    Observable<Quote> getQuote(@Header("X-Mashape-Key") String xMashapeKey, @Query("cat") String category);
 
     class Factory {
         public static MaShapeService create() {
