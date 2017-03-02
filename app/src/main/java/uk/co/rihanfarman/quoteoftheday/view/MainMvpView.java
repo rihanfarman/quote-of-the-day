@@ -9,4 +9,6 @@ public interface MainMvpView extends MvpView {
     void showMessage(String message);
 
     void showProgressIndicator();
+
+    void hideProgressIndicator();
 }

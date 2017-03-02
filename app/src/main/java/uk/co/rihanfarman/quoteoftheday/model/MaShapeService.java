@@ -1,5 +1,7 @@
 package uk.co.rihanfarman.quoteoftheday.model;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -18,10 +20,18 @@ public interface MaShapeService {
 
     class Factory {
         public static MaShapeService create() {
+            OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
+
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+            builder.addInterceptor(logging);
+
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("https://andruxnet-random-famous-quotes.p.mashape.com/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    .client(builder.build())
                     .build();
 
             return retrofit.create(MaShapeService.class);
