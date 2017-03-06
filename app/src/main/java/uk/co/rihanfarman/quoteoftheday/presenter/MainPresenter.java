@@ -10,6 +10,7 @@ import io.realm.Realm;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import uk.co.rihanfarman.quoteoftheday.BuildConfig;
 import uk.co.rihanfarman.quoteoftheday.model.MaShapeService;
 import uk.co.rihanfarman.quoteoftheday.model.Quote;
 import uk.co.rihanfarman.quoteoftheday.model.QuoteAdapter;
@@ -44,7 +45,7 @@ public class MainPresenter implements Presenter<MainMvpView> {
         //ç
         MaShapeService maShapeService = MaShapeService.Factory.create();
 
-        maShapeService.getQuote("ztzfKAxQebmshkc9GNUrGgh19bx9p1c4r6Djsnu6sJ75x4IxZC", "Famous")
+        maShapeService.getQuote(BuildConfig.API_KEY, "Famous")
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Subscriber<Quote>() {
