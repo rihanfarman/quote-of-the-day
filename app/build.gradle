@@ -17,6 +17,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors {
+        dev {
+            applicationId "uk.co.rihanfarman.quoteoftheday.dev"
+            buildConfigField 'String', 'API_KEY', '"UiQGO5FwRqmshwhVUP6KVRHujcfMp1wEHNpjsnXee548aXlVir"'
+        }
+        prod {
+            applicationId "uk.co.rihanfarman.quoteoftheday"
+            buildConfigField 'String', 'API_KEY', '"ztzfKAxQebmshkc9GNUrGgh19bx9p1c4r6Djsnu6sJ75x4IxZC"'
+        }
+    }
 }
 
 dependencies {

@@ -1,10 +1,12 @@
 package uk.co.rihanfarman.quoteoftheday.model;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -43,15 +45,30 @@ public class QuoteAdapter extends RecyclerView.Adapter<QuoteAdapter.QuoteViewHol
         return quotes.size();
     }
 
-    static class QuoteViewHolder extends RecyclerView.ViewHolder {
+    class QuoteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView quote;
         TextView author;
+        ImageView share;
 
         QuoteViewHolder(View itemView) {
             super(itemView);
             quote = (TextView) itemView.findViewById(R.id.quote_textView);
             author = (TextView) itemView.findViewById(R.id.author_textView);
+            share = (ImageView) itemView.findViewById(R.id.share_imageView);
+            share.setOnClickListener(this);
+
+        }
+
+        @Override
+        public void onClick(View view) {
+
+            Quote quote = quotes.get(getAdapterPosition());
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "\"" + quote.getQuote() + "\" - " + quote.getAuthor());
+            sendIntent.setType("text/plain");
+            view.getContext().startActivity(Intent.createChooser(sendIntent, view.getContext().getResources().getString(R.string.send_to,quote.getAuthor())));
         }
     }
 

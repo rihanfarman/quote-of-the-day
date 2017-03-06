@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Quote Of The Day</string>
     <string name="quote">Some days are just bad days, that\'s all. You have to experience sadness to know happiness, and I remind myself that not every day is going to be a good day, that\'s just the way it is!</string>
+    <string name="send_to">Send %s\'s quote to</string>
 </resources>
